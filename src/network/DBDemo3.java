@@ -2,33 +2,25 @@ package network;
 
 import java.sql.*;
 
-public class DBDemo2 {
+public class DBDemo3 {
   public static void main(String[] args) throws SQLException {
-    // 접속하려는 db 정보
-    Connection con = makeConnection();
+    Connection conn = makeConnection();
+    String sql = "select * from person";
 
-    String sql = "update person set email = ? where phone =? and name =? ;";
+    PreparedStatement ps = conn.prepareStatement(sql);
 
-    PreparedStatement pstmt = con.prepareStatement(sql);
+    ResultSet rs = ps.executeQuery();
 
-    pstmt.setObject(3, "임꺽정");
-    pstmt.setString(2, "010-444-4444");
-    pstmt.setString(3, "임꺽정");
+    System.out.println(rs);
 
-    int rows = pstmt.executeUpdate();
-    if(rows == 1) {
-      System.out.println("정상적으로 수정되었습니다.");
-    } else {
-      System.out.println("수정 실패");
+    while(rs.next()) {
+      System.out.print("name : " + rs.getString(1) + ", ");
+      System.out.print("phone : " + rs.getString("phone") + ", ");
+      System.out.print("email : " + rs.getString(3) + '\n');
     }
 
-    if (pstmt != null) {
-      pstmt.close();
-    }
-    if(con != null) {
-      con.close();
-    }
   }
+
 
   private static Connection makeConnection() {
     String url = "jdbc:mysql://localhost:3306/contacts?serverTimezone=Asia/Seoul";
@@ -48,4 +40,6 @@ public class DBDemo2 {
     //System.out.println(con);
     return con;
   }
+
+
 }
